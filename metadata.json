@@ -1,0 +1,5 @@
+{
+  "name": "EMS Hourly Operation Dashboard",
+  "description": "A production-grade industrial reporting system for utility-scale BESS control rooms. Features strict group isolation, automated report formatting (Format A/B), and real-time operational preview.",
+  "requestFramePermissions": []
+}
