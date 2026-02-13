@@ -38,6 +38,7 @@ const LivePreview: React.FC<LivePreviewProps> = ({ state, data, project, onSave 
       ? `EMS Status: ${data.availability.emsStatus}\n +Note: ${data.availability.emsNote || 'N/A'}` 
       : `EMS Status: ${data.availability.emsStatus}`;
 
+    // Note: Using project.name for ALL formats to show full Project ID as requested
     if (project.type === ProjectType.FORMAT_A) {
       const d = data.telemetry.formatA!;
       return `Name: ${project.name}
@@ -70,7 +71,7 @@ Overall Judgment: ${data.availability.overallJudgment}
  +Solved Expectation: ${data.incidents.solvedExpectation || 'N/A'}`;
     } else {
       const d = data.telemetry.formatB!;
-      return `Name: ${project.siteName}
+      return `Name: ${project.name}
 Hourly Report
 Date: ${formattedDate}
 Shift: ${state.shift}

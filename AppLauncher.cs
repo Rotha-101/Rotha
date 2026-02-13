@@ -12,7 +12,7 @@ namespace EMSLauncher
         {
             try
             {
-                // Force working directory to the folder where the EXE is located
+                // Force the application to use its own directory as the working folder
                 string appPath = AppDomain.CurrentDomain.BaseDirectory;
                 Directory.SetCurrentDirectory(appPath);
 
@@ -20,19 +20,19 @@ namespace EMSLauncher
 
                 if (!File.Exists(batFile))
                 {
-                    MessageBox.Show("Error: 'APP.bat' is missing from the folder.", "EMS Dashboard Launcher", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    MessageBox.Show("Configuration Error: 'APP.bat' was not found in: " + appPath, "EMS Launcher", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // If node_modules is missing, it's the first run. Let's warn the user.
+                // Check for Node Modules to alert user about the initial wait time
                 if (!Directory.Exists(Path.Combine(appPath, "node_modules")))
                 {
-                    MessageBox.Show("First-time setup starting. The system will download required components in the background. Please wait a moment...", "EMS System Initialization", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("First-time initialization starting.\n\nThe system will now download required components in the background. This may take 30-60 seconds.\n\nYour browser will open automatically when ready.", "EMS System Setup", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 ProcessStartInfo startInfo = new ProcessStartInfo();
                 startInfo.FileName = "cmd.exe";
-                // Start the batch file and don't keep the CMD window open
+                // Crucial: The triple quotes handle paths with spaces correctly in CMD /C
                 startInfo.Arguments = "/c \"\"" + batFile + "\"\"";
                 startInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 startInfo.CreateNoWindow = true;
@@ -43,7 +43,7 @@ namespace EMSLauncher
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Launcher Error: " + ex.Message, "EMS Dashboard Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Launcher Fatal Error: " + ex.Message, "EMS Dashboard Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
