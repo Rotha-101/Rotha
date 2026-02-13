@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { AppState, ReportData, ProjectType, Shift } from '../types';
 import { PROJECTS, OPERATORS, GROUPS } from '../constants';
@@ -17,10 +16,13 @@ const ReportForm: React.FC<ReportFormProps> = ({ state, data, onProjectSelect, o
 
   const toggleFunction = (key: string) => {
     if (!data) return;
+    const currentValues = { ...data.bessFunction };
+    const newVal = !(currentValues as any)[key];
+    
     onUpdateData({
       bessFunction: {
-        ...data.bessFunction,
-        [key]: !(data.bessFunction as any)[key]
+        ...currentValues,
+        [key]: newVal
       }
     });
   };
@@ -52,7 +54,7 @@ const ReportForm: React.FC<ReportFormProps> = ({ state, data, onProjectSelect, o
     onUpdateState({ 
       groupId, 
       groupName: newGroup?.name || '',
-      operatorNames: [], // Reset selected operators when group changes
+      operatorNames: [],
       activeProjectId: firstProject?.id || null,
       activeProjectName: firstProject?.name || null
     });
@@ -67,7 +69,7 @@ const ReportForm: React.FC<ReportFormProps> = ({ state, data, onProjectSelect, o
   return (
     <div className="space-y-6 pb-20">
       {/* 1. REPORT CONTEXT & OPERATORS */}
-      <section className="dashboard-card p-6 border-l-4 border-l-sky-500/30">
+      <section className="dashboard-card p-6 border-l-4 border-l-sky-500/30 shadow-xl">
         <div className="flex items-center gap-2 mb-6 text-slate-300">
           <i className="fas fa-file-invoice text-sky-400"></i>
           <h2 className="text-[12px] font-black uppercase tracking-widest">1. Report Context & Operators</h2>
@@ -97,14 +99,12 @@ const ReportForm: React.FC<ReportFormProps> = ({ state, data, onProjectSelect, o
           </div>
           <div className="space-y-1.5">
             <label className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Reporting Date</label>
-            <div className="relative">
-              <input 
-                type="date" 
-                className="w-full input-dark rounded p-2.5 text-xs font-bold" 
-                value={state.reportDate}
-                onChange={e => onUpdateState({ reportDate: e.target.value })}
-              />
-            </div>
+            <input 
+              type="date" 
+              className="w-full input-dark rounded p-2.5 text-xs font-bold" 
+              value={state.reportDate}
+              onChange={e => onUpdateState({ reportDate: e.target.value })}
+            />
           </div>
           <div className="space-y-1.5">
             <label className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Hour (Interval End)</label>
@@ -124,8 +124,9 @@ const ReportForm: React.FC<ReportFormProps> = ({ state, data, onProjectSelect, o
             {Object.values(Shift).map(s => (
               <button
                 key={s}
+                type="button"
                 onClick={() => onUpdateState({ shift: s })}
-                className={`py-2 rounded text-[10px] font-bold border transition-all uppercase ${state.shift === s ? 'bg-sky-500/80 text-slate-900 border-sky-400' : 'bg-slate-800/40 text-slate-400 border-slate-700'}`}
+                className={`py-2 rounded text-[10px] font-bold border transition-all uppercase ${state.shift === s ? 'bg-sky-500 text-slate-900 border-sky-400' : 'bg-slate-800/40 text-slate-400 border-slate-700 hover:border-slate-500'}`}
               >
                 {s}
               </button>
@@ -134,13 +135,14 @@ const ReportForm: React.FC<ReportFormProps> = ({ state, data, onProjectSelect, o
         </div>
 
         <div className="space-y-3">
-          <label className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">On-Duty Operators (Select Multiple)</label>
+          <label className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">On-Duty Operators</label>
           <div className="flex flex-wrap gap-2">
             {groupOperators.map(o => (
               <button
                 key={o.id}
+                type="button"
                 onClick={() => toggleOperator(o.name)}
-                className={`px-3 py-1.5 rounded text-[10px] font-bold border transition-all ${state.operatorNames.includes(o.name) ? 'bg-[#38bdf8] text-slate-900 border-[#38bdf8] shadow-[0_0_12px_rgba(56,189,248,0.3)]' : 'bg-slate-800/60 border-slate-700 text-slate-400 hover:border-slate-500'}`}
+                className={`px-3 py-1.5 rounded text-[10px] font-bold border transition-all ${state.operatorNames.includes(o.name) ? 'bg-[#38bdf8] text-slate-900 border-[#38bdf8] shadow-[0_0_12px_rgba(56,189,248,0.4)]' : 'bg-slate-800/60 border-slate-700 text-slate-400 hover:border-slate-500'}`}
               >
                 {o.name}
               </button>
@@ -151,9 +153,9 @@ const ReportForm: React.FC<ReportFormProps> = ({ state, data, onProjectSelect, o
 
       {/* 2. BESS FUNCTION CONTROLS */}
       {data && (
-        <section className="dashboard-card p-6 border-l-4 border-l-sky-500/30">
+        <section className="dashboard-card p-6 border-l-4 border-l-amber-500/30 shadow-xl">
           <div className="flex items-center gap-2 mb-6 text-slate-300">
-            <i className="fas fa-microchip text-sky-400"></i>
+            <i className="fas fa-microchip text-amber-400"></i>
             <h2 className="text-[12px] font-black uppercase tracking-widest">2. BESS Function Controls</h2>
           </div>
           
@@ -171,12 +173,13 @@ const ReportForm: React.FC<ReportFormProps> = ({ state, data, onProjectSelect, o
               return (
                 <button
                   key={f.key}
+                  type="button"
                   onClick={() => toggleFunction(f.key)}
-                  className={`flex flex-col items-center justify-center p-4 rounded border transition-all h-20 ${ isActive ? 'bg-sky-500/10 border-sky-500 shadow-[inset_0_0_20px_rgba(56,189,248,0.1)]' : 'bg-slate-800/40 border-slate-700'}`}
+                  className={`flex flex-col items-center justify-center p-4 rounded border transition-all h-20 ${ isActive ? 'bg-sky-500 text-slate-900 border-sky-400 shadow-[0_0_15px_rgba(56,189,248,0.3)]' : 'bg-slate-800/40 border-slate-700 text-slate-500'}`}
                 >
-                  <span className="text-[10px] uppercase font-black text-slate-300 mb-1">{f.label}</span>
-                  <span className={`text-[11px] font-black uppercase ${ isActive ? 'text-sky-400' : 'text-slate-500'}`}>
-                    {isActive ? 'Enable' : 'Disable'}
+                  <span className="text-[9px] uppercase font-black mb-1 leading-tight">{f.label}</span>
+                  <span className={`text-[11px] font-black uppercase`}>
+                    {isActive ? 'Active' : 'Disabled'}
                   </span>
                 </button>
               );
@@ -248,9 +251,9 @@ const ReportForm: React.FC<ReportFormProps> = ({ state, data, onProjectSelect, o
 
       {/* 3. STORAGE TELEMETRY */}
       {data && (
-        <section className="dashboard-card p-6 border-l-4 border-l-sky-500/30">
+        <section className="dashboard-card p-6 border-l-4 border-l-emerald-500/30 shadow-xl">
           <div className="flex items-center gap-2 mb-6 text-slate-300">
-            <i className="fas fa-chart-line text-sky-400"></i>
+            <i className="fas fa-chart-line text-emerald-400"></i>
             <h2 className="text-[12px] font-black uppercase tracking-widest">3. Storage Telemetry (SOC & Cycles)</h2>
           </div>
           
@@ -266,7 +269,7 @@ const ReportForm: React.FC<ReportFormProps> = ({ state, data, onProjectSelect, o
                         type="number" 
                         value={sppc.soc} 
                         onChange={e => onUpdateData({ telemetry: { ...data.telemetry, formatA: { ...data.telemetry.formatA, [key]: { ...sppc, soc: Number(e.target.value) } } } })}
-                        className="input-dark p-3 text-2xl font-black text-sky-400 rounded-lg text-left" 
+                        className="input-dark p-3 text-2xl font-black text-emerald-400 rounded-lg text-left" 
                        />
                        <div className="flex flex-col">
                           <span className="text-[9px] uppercase font-black text-slate-600 mb-1.5">Cycle (Today)</span>
@@ -292,7 +295,7 @@ const ReportForm: React.FC<ReportFormProps> = ({ state, data, onProjectSelect, o
                     type="number" 
                     value={data.telemetry.formatB?.soc} 
                     onChange={e => onUpdateData({ telemetry: { ...data.telemetry, formatB: { ...data.telemetry.formatB!, soc: Number(e.target.value) } } })}
-                    className="input-dark p-3 text-2xl font-black text-sky-400 rounded-lg text-left w-full" 
+                    className="input-dark p-3 text-2xl font-black text-emerald-400 rounded-lg text-left w-full" 
                    />
                 </div>
                 <div className="space-y-2 flex flex-col">
@@ -315,7 +318,7 @@ const ReportForm: React.FC<ReportFormProps> = ({ state, data, onProjectSelect, o
 
       {/* 4. AVAILABILITY & JUDGMENT */}
       {data && (
-        <section className="dashboard-card p-6 border-l-4 border-l-sky-500/30">
+        <section className="dashboard-card p-6 border-l-4 border-l-sky-500/30 shadow-xl">
           <div className="flex items-center gap-2 mb-6 text-slate-300">
             <i className="fas fa-heartbeat text-sky-400"></i>
             <h2 className="text-[12px] font-black uppercase tracking-widest">4. System Availability & Judgment</h2>

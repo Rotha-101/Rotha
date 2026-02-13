@@ -82,7 +82,7 @@ BESS Function:
 -PV Smoothing: ${data.bessFunction.pvSmoothing ? 'Enable' : 'Disable'}
 -PFC: ${data.bessFunction.pfc ? 'Enable' : 'Disable'}
 -QU: ${data.bessFunction.qu ? 'Enable' : 'Disable'}
--Peak Shifting:
+-Peak Shifting: ${data.bessFunction.peakShifting ? 'Enable' : 'Disable'}
 Manual Charge: ${formatManualOp(data.bessFunction.manualCharge)}
 Manual Discharge: ${formatManualOp(data.bessFunction.manualDischarge)}
 
